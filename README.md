@@ -3,6 +3,11 @@
 To run openvscode server on AWS Graviton2.
 The underlying node is a Spot EC2 with Bottlerocket!
 
+```bash
+npm i
+npx cdk deploy
+```
+
 access remotely via http://<instance IP> - 
 lock it down to your client IP address (line 39), so not to expose your vscode to the whole world!
 
@@ -16,6 +21,8 @@ aws ssm start-session --target "Your Instance ID" --document-name AWS-StartPortF
 ```
 access your vscode at `http://localhost:8080`
 (some img error due to port forwarding)
+
+
 
 # Todo
 - publish Dockerfile
