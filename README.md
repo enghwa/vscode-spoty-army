@@ -1,14 +1,25 @@
-# Welcome to your CDK TypeScript project!
+# One node ECS 
 
-This is a blank project for TypeScript development with CDK.
+To run openvscode server on AWS Graviton2.
+The underlying node is a Spot EC2 with Bottlerocket!
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+access remotely via http://<instance IP> - 
+lock it down to your client IP address (line 39), so not to expose your vscode to the whole world!
 
-## Useful commands
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+or you can use AWS SSM, since bottlerocket registers itself to AWS Systems Manager Fleet!
+(uncomment line 39 since you do not need any port exposed)
+
+```bash
+aws ssm start-session --target "Your Instance ID" --document-name AWS-StartPortForwardingSession --parameters "portNumber"=["80"],"localPortNumber"=["8080"]
+
+```
+access your vscode at `http://localhost:8080`
+(some img error due to port forwarding)
+
+# Todo
+- publish Dockerfile
+- add devtools/language, right now u have to sudo/apt-get
+- CI with codebuild 
+- get persistence storage
+- health check

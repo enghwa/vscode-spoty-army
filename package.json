@@ -21,6 +21,10 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
+    "@aws-cdk/aws-autoscaling": "^1.126.0",
+    "@aws-cdk/aws-ec2": "^1.126.0",
+    "@aws-cdk/aws-ecs": "^1.126.0",
+    "@aws-cdk/aws-logs": "^1.126.0",
     "@aws-cdk/core": "1.126.0",
     "source-map-support": "^0.5.16"
   }
