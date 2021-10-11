@@ -25,11 +25,20 @@ export class VscodeSpotyArmyStack extends cdk.Stack {
     })
 
     const asgSpot = new autoscaling.AutoScalingGroup(this, "spotASG", {
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MICRO), //t4g.micro 2vcpu/1gb
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MEDIUM), //t4g.micro 2vcpu/1gb, t4g.medium: 2vcpu/4gb
       machineImage: ec2.MachineImage.fromSsmParameter('/aws/service/bottlerocket/aws-ecs-1/arm64/1.1.0/image_id'),
       spotPrice: '0.0130',
+      // blockDevices: [{
+      //   deviceName: '/dev/xvda',
+      //   volume: autoscaling.BlockDeviceVolume.ebs(200)
+      // }],
       updatePolicy: autoscaling.UpdatePolicy.rollingUpdate(),
       // keyName: '',
+      // userData: ec2.UserData.custom(`
+      //     [settings.kernel.sysctl]
+      //     "user.max_user_namespaces" = "16384"
+      //     "vm.max_map_count" = "262144"
+      // `),
       desiredCapacity: 1,
       maxCapacity: 1,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
@@ -55,17 +64,17 @@ export class VscodeSpotyArmyStack extends cdk.Stack {
     cluster.addAsgCapacityProvider(spotCapacityProvider, { machineImageType: ecs.MachineImageType.BOTTLEROCKET })
 
     const vscodeTaskDef = new ecs.Ec2TaskDefinition(this, 'vscode-taskdef')
-    vscodeTaskDef.addContainer('vscode-container', {
-      image: ecs.ContainerImage.fromRegistry('kopi/vsc:v1'),
+    const vscodeContainer = vscodeTaskDef.addContainer('vscode-container', {
+      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/u3r1l1j7/vscodeserver:latest'), //https://gallery.ecr.aws/u3r1l1j7/code-server
       cpu: 1024,
       memoryLimitMiB: 900,
-      logging: new ecs.AwsLogDriver({ logGroup, streamPrefix: 'vscode-'})
-    }).addPortMappings({containerPort: 3000, hostPort: 80})
-    
-    new ecs.Ec2Service(this, 'openvscode',{
+      logging: new ecs.AwsLogDriver({ logGroup, streamPrefix: 'vscode-' })
+    })
+    vscodeContainer.addPortMappings({ containerPort: 3000, hostPort: 80 })
+    new ecs.Ec2Service(this, 'openvscode', {
       cluster,
       taskDefinition: vscodeTaskDef,
-      desiredCount:1
-    }) 
+      desiredCount: 1
+    })
   }
 }
