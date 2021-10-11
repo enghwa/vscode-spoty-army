@@ -1,15 +1,20 @@
-# One node ECS 
+# OpenVSCode Server for Graviton2 (arm64)
 
-To run openvscode server on AWS Graviton2.
-The underlying node is a Spot EC2 with Bottlerocket!
+## What is this?
+This CDK app will deploy the arm64 port of [OpenVSCode server](https://github.com/gitpod-io/openvscode-server) on a AWS Graviton2 instance.
+This brings a powerful developer IDE to your browser, with multiple development environment (go, python, node, rust, java, php, ruby...) ready to build port your application to arm64.
+![Image of vscode server](openvscode.png)
+
+
 
 ```bash
 npm i
-npx cdk deploy
+npx cdk deploy VscodeSpotyArmyStack
 ```
+Note: The underlying node is a Spot EC2 instance with Bottlerocket.
 
-access remotely via http://<instance IP> - 
-lock it down to your client IP address (line 39), so not to expose your vscode to the whole world!
+Access your remotely via http://<instance IP> - 
+please lock down to your client IP address (line 39), so not to expose your vscode to the whole world!
 
 
 or you can use AWS SSM, since bottlerocket registers itself to AWS Systems Manager Fleet!
@@ -20,13 +25,9 @@ aws ssm start-session --target "Your Instance ID" --document-name AWS-StartPortF
 
 ```
 access your vscode at `http://localhost:8080`
-(some img error due to port forwarding)
-
-
 
 # Todo
-- publish Dockerfile
-- add devtools/language, right now u have to sudo/apt-get
+- add password auth to protect the IDE 
 - CI with codebuild 
 - get persistence storage
 - health check
