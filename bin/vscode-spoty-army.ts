@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { VscodeSpotyArmyStack } from '../lib/vscode-spoty-army-stack';
-import {CodeBuildCIStack} from '../lib/codebuild-ci';
+// import {CodeBuildCIStack} from '../lib/codebuild-ci';
 const app = new cdk.App();
 new VscodeSpotyArmyStack(app, 'VscodeSpotyArmyStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
@@ -20,5 +20,5 @@ new VscodeSpotyArmyStack(app, 'VscodeSpotyArmyStack', {
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
 
-new CodeBuildCIStack(app, 'vscode-ci',{
-})
+// new CodeBuildCIStack(app, 'vscode-ci',{
+// })
